@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -14,11 +15,18 @@ class HomeController extends Controller
         return view('dashboard');
 
     }
-    public function index(){
+    public function index(Request $request){
 
-        $data = User::get();
+        $data = new User;
 
-        return view('index',compact('data'));
+        if($request ->get('search')){
+            $data = $data->where('name','Like','%'.$request->get('search').'%')
+            ->orWhere('email','Like','%'.$request->get('search').'%');
+        }
+
+        $data = $data->get();
+
+        return view('index',compact('data','request'));
     }
 
     public function create(){
@@ -28,21 +36,33 @@ class HomeController extends Controller
     public function store(Request $request){
 
         $validator = Validator::make($request->all(),[
+            'photo' => 'required|mimes:png,jpg,jpeg|max:2048',
             'email' =>'required|email',
             'nama' =>'required',
             'password' =>'required',
 
         ]);
 
+
+
         if($validator->fails()) return redirect()->back()->withInput()->withErrors($validator);
+
+
+        $photo               = $request->file('photo');
+        $filename            = date('Y-m-d').$photo->getClientOriginalName();
+        $path                ='photo-user/'.$filename;
+
+        Storage::disk('public')->put($path,file_get_contents($photo));
 
         $data['email']       = $request->email;
         $data['name']        = $request->nama;
         $data['password']    = Hash::make($request->password);
+        $data['image']       = $filename;
+
 
         User::create($data);
 
-        return redirect()->route('index');
+        return redirect()->route('admin.index');
     }
     public function edit(Request $request,$id){
         $data = User::find($id);
@@ -70,7 +90,7 @@ class HomeController extends Controller
 
         User::whereId($id)->update($data);
 
-        return redirect()->route('index');
+        return redirect()->route('admin.index');
     }
 
     public function delete(Request $request,$id ){
@@ -80,7 +100,7 @@ class HomeController extends Controller
             $data->delete();
         }
 
-        return redirect()->route('index');
+        return redirect()->route('admin.index');
 
 
     }
