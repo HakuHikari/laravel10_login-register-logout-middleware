@@ -55,11 +55,10 @@
                                                 <td>
                                                     <a href="{{ route('admin.user.edit', ['id' => $d->id]) }}"
                                                         class="btn btn-primary"><i class="fas fa-pen"></i> Edit</a>
-                                                    <a data-toggle="modal" data-target="#modal-hapus{{ $d->id }}"
-                                                        class="btn btn-danger"><i class="fas fa-trash-alt"></i> Hapus</a>
+                                                    <a data-toggle="modal" data-target="#modal-hapus{{ $d->id }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Hapus</a>
                                                 </td>
                                             </tr>
-                                            <div class="modal fade" id="modal-hapus"{{ $d->id }}>
+                                            <div class="modal fade" id="modal-hapus{{ $d->id }}">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header">

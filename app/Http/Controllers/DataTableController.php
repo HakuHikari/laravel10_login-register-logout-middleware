@@ -57,7 +57,7 @@ class DataTableController extends Controller
             })
             ->addColumn('action',function($data){
                 return '<a href="'.route('admin.user.edit',['id' => $data->id]).'" class="btn btn-primary"><i class="fas fa-pen"></i> Edit</a>
-                        <a data-toggle="modal" data-target="#modal-hapus'.$data->id.'" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Hapus</a>';
+                <a data-toggle="modal" data-target="#modal-hapus'.$data->id.'" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Hapus</a>';
             })
             ->rawColumns(['photo','action'])
             ->make(true);
